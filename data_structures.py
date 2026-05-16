@@ -72,8 +72,6 @@ class LinkedList:
             
         return False
             
-                 
-
     def length(self):
         """Return the number of nodes in the list. O(n) time."""
         current = self.head
@@ -92,16 +90,77 @@ class LinkedList:
             current = current.next
         return py_list
         
-        
-ll = LinkedList()
-for val in [10, 20, 30, 40, 50]:
-    ll.insert_at_end(val)
 
-ll.display()           # 10 -> 20 -> 30 -> 40 -> 50 -> None
-print(ll.length())     # 5
-ll.delete(30)
-ll.display()           # 10 -> 20 -> 40 -> 50 -> None
-print(ll.to_list())    # [10, 20, 40, 50]
+    def is_balanced(text):
+        """Return True if all brackets in text are properly matched.
+        Handles: (), [], {}
+        """
+        stack = []   #Stack data structure (Last In, First Out - [LIFO])
+        pair_match = {')': '(', ']': '[', '}': '{'} #Mapping Dictionary
+        
+        for ch in text:
+            if ch in '([{':
+                stack.append(ch)
+            elif ch in ')]}':
+                if not stack:
+                    return False
+                if stack.pop() != pair_match[ch]:
+                    return False
+        return len(stack) == 0
+                    
+    
+# - Queue: Task Processor
+
+class TaskProcessor: #First In, First Out (FIFO)
+    
+    def __init__ (self, name):
+        self.name = name
+        self.task_list = deque()
+        
+    
+    def add_task(self, name):
+        self.task_list.append(name)
+        
+    def process_next(self):
+        if not self.task_list:
+            return None
+        return self.task_list.popleft()
+        
+        
+
+
+
+
+    
+    
+    
+    
+
+    # # Tests:
+    # print(is_balanced("()"))           # True
+    # print(is_balanced("({[]})"))       # True
+    # print(is_balanced("(]"))           # False
+    # print(is_balanced("([)]"))         # False
+    # print(is_balanced("hello (world)")) # True
+
+
+
+
+
+
+
+
+
+        
+# ll = LinkedList()
+# for val in [10, 20, 30, 40, 50]:
+#     ll.insert_at_end(val)
+
+# ll.display()           # 10 -> 20 -> 30 -> 40 -> 50 -> None
+# print(ll.length())     # 5
+# ll.delete(30)
+# ll.display()           # 10 -> 20 -> 40 -> 50 -> None
+# print(ll.to_list())    # [10, 20, 40, 50]
     
     
     
