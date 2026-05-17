@@ -7,6 +7,7 @@ class Node:
     def __init__(self, value):
         self.value = value #The data this node holds
         self.next = None  #Reference to the next node (none = end of chain)
+        self.prev = None
         
     def __repr__(self):
         return f"Node ({self.value})"
@@ -16,23 +17,36 @@ class LinkedList:
     
     def __init__(self):
         self.head = None #The list starts empty => no nodes yet
+        self.tail = None
+        
         
     def insert_at_beginning(self, value):
         '''Add a new node at the front of the list. 0(1) time.'''
-        new_node = Node(value)
-        new_node.next = self.head #New node points to the old head
-        self.head = new_node #New node becomes the new head
+        new_node = Node(value)          # 1. Create the new node
+        new_node.next = self.head       # 2. New node points forward to the old head
+        
+        if self.head is not None:       # 3. If the list is not empty,
+            self.head.prev = new_node   #    old head points back to new node
+            
+        self.head = new_node            # 4. New node becomes the head in perpetuity 
+        
+        if self.tail is None:           # 5. If list was empty
+            self.tail = new_node        #    Tail must point to new node
         
     def insert_at_end(self, value):
         '''Add a new node at the end of the list. 0(n) time - must walk to the end'''
         new_node = Node(value)
+        
         if self.head is None: #if the list is empty, new node is the head
             self.head = new_node #New node becomes the new head
+            self.tail = new_node 
             return
-        current = self.head
-        while current.next:  #Walk to the last node
-            current = current.next
-        current.next = new_node #Last node now points to the new node
+        
+        self.tail.next = new_node
+        new_node.prev = self.tail
+        
+        self.tail = new_node
+        
         
     def display(self):
         '''Prints the list in a readable format.'''
@@ -41,6 +55,16 @@ class LinkedList:
         while current:
             elements.append(str(current.value))
             current = current.next
+            
+        print(" -> ".join(elements) + " -> None")
+        
+    def display_reversed(self):
+        '''Prints the reversed-list in a readable format.'''
+        elements = []
+        current = self.tail
+        while current:
+            elements.append(str(current.value))
+            current = current.prev
             
         print(" -> ".join(elements) + " -> None")
         
@@ -57,17 +81,29 @@ class LinkedList:
     def delete(self, target):
         """Remove the first node with the given value. Return True if found, False if not."""
         current = self.head
-        previous = None
         
-        while current:
+        while current is not None:
+            
             if current.value == target:
-                if previous is None:
+                
+                if current == self.head and current == self.tail:
+                    self.head = None
+                    self.tail = None
+                
+                elif current == self.head:
                     self.head = current.next
+                    self.head.prev = None
+                
+                elif current == self.tail:
+                    self.tail = current.prev
+                    self.tail.next = None
+                
                 else:
-                    previous.next = current.next
+                    current.prev.next = current.next
+                    current.next.prev = current.prev   
+                
                 return True
             
-            previous = current
             current = current.next
             
         return False
